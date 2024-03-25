@@ -53,7 +53,7 @@ Inspector.propTypes = {
   topics: PropTypes.string,
 }
 
-const App = ({ snapshot }) => {
+const App = ( { snapshot } ) => {
   const [ currentSource, setCurrentSource ] = React.useState()
   const [ currentTarget, setCurrentTarget ] = React.useState()
   const [ currentTopics, setCurrentTopics ] = React.useState()
@@ -75,6 +75,7 @@ const App = ({ snapshot }) => {
   const handleMouseOutLink = (_source, _target) => {
     setCurrentSource(undefined)
     setCurrentTarget(undefined)
+    setCurrentTopics( undefined )
   }
 
   /**
@@ -132,4 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .getElementById('layout-wrapper')
       .appendChild(document.createElement('div'))
   )
-})
+} )
+
+export default App
