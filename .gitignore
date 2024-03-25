@@ -45,3 +45,5 @@ yarn-debug.log*
 /*.json
 
 .idea
+
+.vscode/

@@ -96,9 +96,72 @@ link:
     topics:"Dmarc Digests, Beanstalk" 
   }
 ```
-### Frontend Updates:
-> In the App component on the frontend, a new function `findCurrentTopics` has been implemented to dynamically retrieve the current topics based on the source and target parameters of the interaction:
->
-> This function is utilized alongside a React state hook that stores the topics to be displayed in the Inspector. This approach replaces the previous constant topics variable. Using a state hook for topics instead of a static variable enhances the component's reactivity and allows for real-time updates of the displayed information as user interactions dictate. 
->
-> This is particularly advantageous for an interactive graph where users can hover over various links to see different conversation topics, making the display much more dynamic and user-responsive. It reflects the reactive nature of modern web applications, where UI elements adjust and re-render as the underlying data changes.
+
+
+### Backend Testing (Ruby on Rails)
+
+
+#### 1. **Unit Tests**
+Verify the functionality of individual models and methods in the Rails application. Frameworks like `RSpec` are used. Tests for models (e.g., `Snapshot`) should ensure proper data handling and storage mechanisms.
+
+#### 2. **Controller Tests**
+Ensure your controllers correctly process incoming requests and return the expected responses. This includes testing for correct routing, parameter handling, and HTTP response statuses.
+
+#### 3. **Rake Task Tests**
+Given the project includes a Rake task (`snapshot:take`) for taking snapshots of in-app communications, it's crucial to test this task's execution and functionality.
+
+## Frontend Tests
+
+### Graph Component
+
+These tests utilize `@testing-library/react` for rendering components and simulating user interactions.
+
+#### Rendering Test
+
+- **Renders the App component with mock data**: Verifies that the `graph` component correctly renders nodes and initial instructions for user interaction. This test uses a set of dummy snapshot data to simulate the application state and checks if the node elements and initial help text are present in the document.
+
+#### Interaction Test
+
+- **Updates the inspector when hovering over a link**: Ensures that when a user hovers over a connection line between nodes, the inspector updates to display the correct information. This test simulates a mouseOver event on a link and checks if the inspector reflects the topics discussed between the two connected nodes.
+
+#### Node Rendering Test
+
+- **Renders nodes correctly within the Graph**: Confirms that each node specified in the snapshot data is rendered on the screen. This ensures the graph's visual representation matches the underlying data structure.
+
+### Testing Strategy
+
+- After each test, cleanup is performed to reset the environment, ensuring no residual data affects subsequent tests.
+- Mock data is used to represent a snapshot of in-app communications, consisting of nodes (users) and links (connections) with associated topics.
+- Interaction with the graph's elements, such as hovering over links, is simulated to test dynamic updates to the UI.
+
+
+## Backend Tests
+
+### Snapshot Model
+
+Testing the `Snapshot` model involves ensuring that it correctly represents the structure of in-app communications data after interacting with the Postmark API. The following tests are designed to verify the integrity of the Snapshot creation process.
+
+#### Snapshot Creation Test
+
+- **Creates a new Snapshot with correct data structure**: This test confirms that invoking `Snapshot.take` results in a new `Snapshot` instance populated with data that mirrors the structure expected from the Postmark API's responses. Mock responses simulate incoming data, and the test verifies that the snapshot contains the correct nodes and links, reflecting the communications network.
+
+#### Test Data Preparation
+
+A simulated response from the Postmark API is used to provide a reliable input for testing. This ensures that the `Snapshot` model's `.take` method can process and store data correctly, regardless of changes or inconsistencies in live data.
+
+#### Data Verification
+
+The test asserts that:
+- A `Snapshot` instance is created and is not nil.
+- The `data` attribute of the `Snapshot` instance contains `nodes` and `links` as expected.
+- The `nodes` and `links` match the structure and content expected from the Postmark API response, including the correct identification of message senders (sources) and recipients (targets), as well as the topics of communication.
+
+#### Mocking External Services
+
+External calls to the Postmark API are mocked to prevent live network calls during testing, thereby increasing test speed and reliability.
+
+### Testing Strategy
+
+These tests are implemented using RSpec, and they rely on the `Postmark::ApiClient` to mock interactions with the Postmark API. The `Snapshot` model's `.take` method is then invoked, and its output is compared against the expected data structure, ensuring the model behaves as required.
+
+

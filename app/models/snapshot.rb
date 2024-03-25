@@ -6,7 +6,7 @@ class Snapshot < ApplicationRecord
   def self.take
     connection = Postmark::ApiClient.new(Rails.application.config.x.postmark.api_token)
 
-    messages = connection.get_messages()
+    messages = connection.get_messages(count: 500, offset: 0)
     
     data = build_graph_structure(messages)
 
